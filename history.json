@@ -14,5 +14,13 @@
       "Cloudflare": "online",
       "Router Locale": "online"
     }
+  },
+  {
+    "time": "2026-08-01T03:13:27Z",
+    "services": {
+      "DNS Sbagliato": "offline",
+      "Cloudflare": "online",
+      "Router Locale": "online"
+    }
   }
 ]

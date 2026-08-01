@@ -22,5 +22,13 @@
       "Cloudflare": "online",
       "Router Locale": "online"
     }
+  },
+  {
+    "time": "2026-08-01T03:16:01Z",
+    "services": {
+      "DNS Sbagliato": "offline",
+      "SMERALDOBOOKS": "online",
+      "Cristsllo Router": "offline"
+    }
   }
 ]

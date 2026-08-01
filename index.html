@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stato Servizi</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f172a; color: #f8fafc; max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
+        .card { background: #1e293b; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .status-badge { padding: 0.25rem 0.75rem; border-radius: 9999px; font-weight: bold; font-size: 0.875rem; text-transform: uppercase; }
+        .online { background: #059669; color: #ecfdf5; }
+        .offline { background: #dc2626; color: #fef2f2; }
+        .service-row { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid #334155; }
+        .service-row:last-child { border-bottom: none; }
+        #stale-banner { display: none; background: #b91c1c; color: white; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; font-weight: bold; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <h1>Stato Servizi Monitorati</h1>
+    
+    <div id="stale-banner">
+        ⚠️ IL SISTEMA DI MONITORAGGIO È OFFLINE (Mancato aggiornamento da oltre 10 minuti)
+    </div>
+
+    <div class="card">
+        <h2>Servizi in Tempo Reale</h2>
+        <p><small>Ultimo ping eseguito il: <span id="last-update">2026-08-01T00:59:45Z</span></small></p>
+        <div id="services-list"></div>
+    </div>
+
+    <div class="card">
+        <h2>Storico Uptime (Ultimi Controlli)</h2>
+        <canvas id="historyChart"></canvas>
+    </div>
+
+    <script>
+        const MAX_STALE_MINUTES = 10; // Soglia in minuti per considerare il sistema di monitoraggio KO
+        const lastUpdateStr = "2026-08-01T00:59:45Z";
+        const lastUpdateDate = new Date(lastUpdateStr);
+        const now = new Date();
+        const diffMinutes = (now - lastUpdateDate) / (1000 * 60);
+
+        let isStale = false;
+        if (diffMinutes > MAX_STALE_MINUTES) {
+            isStale = true;
+            document.getElementById('stale-banner').style.display = 'block';
+        }
+
+        fetch('history.json?t=' + Date.now())
+            .then(res => res.json())
+            .then(history => {
+                if (!history.length) return;
+                const latest = history[history.length - 1];
+                const listDiv = document.getElementById('services-list');
+                
+                // Genera la lista dei servizi
+                for (const [name, state] of Object.entries(latest.services)) {
+                    const row = document.createElement('div');
+                    row.className = 'service-row';
+                    
+                    const finalState = isStale ? 'offline' : state;
+                    const stateText = isStale ? 'Sconosciuto (System Down)' : state;
+
+                    row.innerHTML = `
+                        <span>${name}</span>
+                        <span class="status-badge ${finalState}">${stateText}</span>
+                    `;
+                    listDiv.appendChild(row);
+                }
+
+                // Genera il grafico storico con Chart.js
+                const labels = history.map(h => new Date(h.time).toLocaleTimeString());
+                const serviceNames = Object.keys(latest.services);
+                
+                const datasets = serviceNames.map((name, index) => {
+                    const colors = ['#38bdf8', '#4ade80', '#f43f5e', '#a855f7', '#f59e0b'];
+                    return {
+                        label: name,
+                        data: history.map(h => isStale ? 0 : (h.services[name] === 'online' ? 1 : 0)),
+                        borderColor: colors[index % colors.length],
+                        stepped: true
+                    };
+                });
+
+                new Chart(document.getElementById('historyChart'), {
+                    type: 'line',
+                    data: { labels, datasets },
+                    options: {
+                        scales: {
+                            y: {
+                                min: 0,
+                                max: 1.1,
+                                ticks: {
+                                    callback: val => val === 1 ? 'ONLINE' : 'OFFLINE'
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+    </script>
+</body>
+</html>

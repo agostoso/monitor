@@ -54,5 +54,13 @@
       "SMERALDOBOOKS": "online",
       "Cristsllo Router": "offline"
     }
+  },
+  {
+    "time": "2026-08-01T09:51:45Z",
+    "services": {
+      "DNS Sbagliato": "offline",
+      "SMERALDOBOOKS": "online",
+      "Cristsllo Router": "offline"
+    }
   }
 ]

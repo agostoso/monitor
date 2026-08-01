@@ -222,5 +222,13 @@
       "SMERALDOBOOKS": "online",
       "Cristsllo Router": "offline"
     }
+  },
+  {
+    "time": "2026-08-01T11:35:01Z",
+    "services": {
+      "DNS Sbagliato": "offline",
+      "SMERALDOBOOKS": "online",
+      "Cristsllo Router": "offline"
+    }
   }
 ]

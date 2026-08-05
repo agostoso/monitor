@@ -26,7 +26,7 @@
 
     <div class="card">
         <h2>Servizi in Tempo Reale</h2>
-        <p><small>Ultimo ping eseguito il: <span id="last-update">2026-08-05T23:00:01Z</span></small></p>
+        <p><small>Ultimo ping eseguito il: <span id="last-update">2026-08-05T23:05:01Z</span></small></p>
         <div id="services-list"></div>
     </div>
 
@@ -37,7 +37,7 @@
 
     <script>
         const MAX_STALE_MINUTES = 10; // Soglia in minuti per considerare il sistema di monitoraggio KO
-        const lastUpdateStr = "2026-08-05T23:00:01Z";
+        const lastUpdateStr = "2026-08-05T23:05:01Z";
         const lastUpdateDate = new Date(lastUpdateStr);
         const now = new Date();
         const diffMinutes = (now - lastUpdateDate) / (1000 * 60);
